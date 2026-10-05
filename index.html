@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Chapter 28: Legend Of The Rabbit</title>
+<style>
+body{margin:0;overflow:hidden;background:#12180e;font-family:Verdana,sans-serif;color:#e8f5d0}
+#storyPage{position:absolute;inset:0;z-index:999;background:#12180e;overflow-y:auto;padding:20px;pointer-events:all}
+.hud{position:absolute;background:rgba(15,30,10,0.92);border:2px solid #8bc34a;padding:10px;border-radius:8px;pointer-events:all;font-family:monospace}
+#hudStats{top:10px;left:10px;width:370px}
+#hudQuest{top:10px;right:10px;width:380px;border-color:#ffca28}
+#hudInv{bottom:10px;left:10px;width:440px;display:none}
+#hudMap{bottom:10px;right:10px;width:170px;height:170px}
+.bar{width:100%;height:17px;background:#1e2e15;border:1px solid #8bc34a;margin:3px 0}
+.fill{height:100%;transition:width 0.25s}
+#hp{background:linear-gradient(90deg,#33691e,#8bc34a);width:100%}
+#energy{background:linear-gradient(90deg,#ff8f00,#ffca28);width:100%}
+#sleep{background:linear-gradient(90deg,#4a148c,#ab47bc);width:50%}
+#xpBar{background:linear-gradient(90deg,#00695c,#26a69a);width:0%}
+#skillMenu{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:720px;background:#151e0e;border:3px solid #8bc34a;padding:20px;display:none;z-index:90;pointer-events:all;border-radius:12px}
+button{background:#223314;color:#fff;border:1px solid #8bc34a;padding:7px 12px;margin:3px;cursor:pointer;border-radius:4px}
+button:hover{background:#334a1a;color:yellow}
+#crosshair{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;color:#8bc34a;pointer-events:none}
+</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+</head>
+<body>
+
+<div id="storyPage">
+<h1 style="text-align:center;color:#8bc34a">Chapter 28: Bedtime Stories<br>March 15 2020<br>Legend Of The Rabbit<br>Written By Wouston Worcestershire And "The Rages Band"</h1>
+<div style="max-width:900px;margin:auto;background:#1a2512;padding:20px;border:2px solid #8bc34a;white-space:pre-wrap;line-height:1.8">
+Once upon a time in a town of Luvid. He doesn't want to walk and rest. But the thing is he wanna ran always and ever. His name is Drei, he is the one who runs so fast and nimble. Till the day he want to make his own playground. And want to play with the kids in Luvid town. Suddenly his mother came going home in Luvid town. And caught him playing in the playground. Her name is Mudra. Mudra is the strict mother of Drei. She want to discipline him very much. But for being tolerated of Drei's self of still running and with no rest. Drei disrespect his mother. Mother Mudra said, he you Drey! I told you that if you respect the parent. The parent will respect him too. But Drei denied it and still start playing around with tiredness. As the story ends for almost 1 month passed. And Drei still don't respect himself and still play with kids around the town of Luvid. Then at night all of the kids of Luvid town is already left. Because it's dangerous for them to play so much at night. Then when kids everywhere sleeps in night. But Drei denied it for almost 1 month. Suddenly the hermit came. His name is Racky, the hermit one who punishes the kid like Drei to turn him into a rabbit. By lack of sleep and still running and playing around the town of Luvid. And when Drei caught the anonymous one. Drei said, Hey who are you!. Hermit Racky said, I am the hermit who disciplines the children. I can see it though you know, that your mother that time disciplines you. But you still don't make rest in just 1 month. And still you there are running over and over again. Hmm, I think I will give you a sanction enough. I will turn you into a rabbit so can't ever sleep ever than never. Drei said, No please. Hermit Racky said, too late because of your tolerations or just accepting who you are. And not thinking respect for your mother. I'm so sorry you never discipline your mother. Then I never discipline you too. Drei said, Noooo!!!... Hermit Racky already cast a spell and turn Drei being normal kid. He turns into a "Legend Of The Rabbit". Where he can never ever sleep anymore. But in the next 1 day when normal kids of Drei plays in the playground. Drei already can't play with the kids in the Luvid Town. But he can only play with the kids in the playground by start running. And never been sleep anymore. As the lesson of not obeying the rules with his mother. The name Drei is not his name anymore. His already the rabbit always running and not sleeping. Then Drei the animal rabbit. Is played by friends or kids by him.
+Moral Lesson: Don't abuse too much running and playing. Be clever to spent some sleep to make an energy. Have time to not been tired. And still ready to face everything. By choosing respect to elderly. You can do whatever you want. You can't do it if you make thinking stupid. That is not healthy to play or run and even without resting for respect. So be discipline to care a healthy self.
+</div>
+<center style="margin:20px">
+<p><b>UNIQUE GENRE: Parkour Runner + Sleep Management</b> - You must RUN but also REST! If you run 1 month without rest, Hermit Racky turns you into rabbit!</p>
+<p>Controls: WASD Run | SHIFT Sprint (Costs Energy) | SPACE Jump | F Camera Third/First | E Talk | Q Inventory | K Skills | R Rest / Sleep</p>
+<button onclick="begin()" style="font-size:24px;background:#8bc34a;color:#000;padding:16px 45px;border-radius:8px">START AS DREI IN LUVID TOWN</button>
+</center>
+</div>
+
+<div class="hud" id="hudStats">
+<b>PLAYER CHARACTER: Drei / Rabbit</b><br>
+Class: <select id="classSelect" onchange="classChange()"><option>Drei - Fast Runner [Speed 10]</option><option>Mudra - Strict Mother [Discipline High]</option><option>Racky Hermit - Spell Caster [Magic]</option><option>Legend Rabbit - Never Sleeps [Speed 12]</option></select> Level <span id="lvl">1</span>
+<div>Health</div><div class="bar"><div id="hp" class="fill"></div></div>
+<div>Energy - Running Power</div><div class="bar"><div id="energy" class="fill"></div></div>
+<div>Sleep - Rest Meter (Low = Danger!)</div><div class="bar"><div id="sleep" class="fill"></div></div>
+<div>Respect XP</div><div class="bar"><div id="xpBar" class="fill"></div></div>
+<div>Playground Built: <span id="play">0%</span> | Respect: <span id="respect">0</span> | SPD:<span id="spd">10</span> DEF:<span id="def">5</span> STA:<span id="sta">8</span></div>
+</div>
+
+<div class="hud" id="hudQuest">
+<b id="mainQuest">MAIN QUEST: Legend Of The Rabbit</b><div id="mainDesc">You are Drei, you love running! Build playground! But Mother Mudra says respect and rest! If you run 1 month without sleep, Hermit Racky will curse you!</div><hr>
+<div id="sideQuest" style="font-size:11px"></div>
+</div>
+
+<div class="hud" id="hudInv">
+<h3>INVENTORY AND EQUIPMENT SYSTEM</h3>
+<div id="invList">
+- Running Shoes [Equipped] Speed +3<br>
+- Playground Wood x0 [Need 10 to build playground]<br>
+- Mother Mudra Discipline Note [Quest] Respect +10<br>
+- Hermit Racky Spell Scroll - Turns kid into rabbit [Boss Item]<br>
+- Carrot - Rabbit Energy [Consumable] Energy +30<br>
+- Bed - For Rest and Sleep [Equipment] Sleep +50<br>
+</div>
+<button onclick="equipShoes()">Equip Running Shoes Speed +3</button><button onclick="buildPlay()">Build Playground - Need Wood</button><button onclick="restSleep()">Rest / Sleep - Press R - Energy and Sleep Restore</button><button onclick="this.parentElement.style.display='none'">Close Q</button>
+</div>
+
+<div class="hud" id="hudMap"><canvas id="miniMap" width="150" height="150"></canvas><center>MINI-MAP<br>Luvid Town Playground</center></div>
+<div id="crosshair">RUN</div>
+
+<div id="skillMenu">
+<h2>PROGRESSION AND SKILL TREE - Discipline and Health</h2>Points: <span id="sp">1</span><br>
+<button onclick="learnSkill('discipline')">DISCIPLINE Level 1 - Respect Mother Mudra Respect +20 DEF +5</button><br>
+<button onclick="learnSkill('rest')">REST Level 1 - Sleep to make energy STA +7 Sleep +20%</button><br>
+<button onclick="learnSkill('nimble')">NIMBLE RUN Level 1 - Runs so fast and nimble SPD +6</button><br>
+<button onclick="learnSkill('playground')">PLAYGROUND BUILDER Level 1 - Build own playground XP x2</button><br>
+<button onclick="learnSkill('rabbit')">RABBIT FORM Level 1 - Legend Of The Rabbit - Never sleep but super speed</button><br>
+<button onclick="learnSkill('respect')">RESPECT ELDERLY Level 1 - Parent will respect you too WIS +8</button><br>
+<div id="skillLog" style="color:#aed581;margin-top:10px"></div><button onclick="document.getElementById('skillMenu').style.display='none'">Close K</button>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+let scene,camera,renderer,player,keys={},first=false,running=false,time=0,days=0;
+let P={hp:100,max:100,energy:100,sleep:50,xp:0,lv:1,playground:0,respect:0,spd:10,def:5,sta:8,sp:1,isRabbit:false};
+let enemies=[],npcs=[],woods=[],playgroundParts=[];
+window.begin=()=>{document.getElementById('storyPage').style.display='none';initGame();}
+window.classChange=()=>{
+ let v=document.getElementById('classSelect').value;
+ if(v.includes('Drei')){P.spd=10;P.sta=8;P.def=5; player.children[0].material.color.set(0x8bc34a);}
+ if(v.includes('Mudra')){P.def=9;P.spd=5;P.sta=7; player.children[0].material.color.set(0xff8a65);}
+ if(v.includes('Racky')){P.def=6;P.spd=6;P.sta=9; player.children[0].material.color.set(0x9575cd);}
+ if(v.includes('Rabbit')){P.spd=12;P.sta=10;P.def=4; P.isRabbit=true; player.children[0].material.color.set(0xffffff); document.getElementById('mainDesc').innerText="You are now Legend Of The Rabbit! Always running and never sleeping! Play with kids by running!";}
+ updateHUD();
+}
+function initGame(){
+ running=true;
+ scene=new THREE.Scene(); scene.background=new THREE.Color(0x1a2512); scene.fog=new THREE.Fog(0x1a2512,12,50);
+ camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,1000); renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(innerWidth,innerHeight); document.body.appendChild(renderer.domElement);
+ scene.add(new THREE.AmbientLight(0xc5e1a5,0.85)); let dl=new THREE.DirectionalLight(0xdcedc8,0.9); dl.position.set(10,15,10); scene.add(dl);
+ // 3D WORLD - Town of Luvid + Playground
+ let ground=new THREE.Mesh(new THREE.PlaneGeometry(100,100), new THREE.MeshStandardMaterial({color:0x33691e})); ground.rotation.x=-Math.PI/2; scene.add(ground);
+ // Playground - goal to build
+ for(let i=0;i<4;i++){let pole=new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.2,4,8), new THREE.MeshStandardMaterial({color:0x8d6e63})); pole.position.set(-10+i*6,2,-18); scene.add(pole); playgroundParts.push(pole);}
+ let slide=new THREE.Mesh(new THREE.BoxGeometry(6,0.5,1.5), new THREE.MeshStandardMaterial({color:0xffca28})); slide.position.set(0,1.5,-22); slide.rotation.z=0.3; scene.add(slide);
+ // Town houses
+ for(let i=0;i<5;i++){let house=new THREE.Mesh(new THREE.BoxGeometry(6,5,6), new THREE.MeshStandardMaterial({color:0x6d4c41})); house.position.set(-30+i*15,2.5,18); scene.add(house);}
+ // Wood for playground
+ for(let i=0;i<8;i++){let wood=new THREE.Mesh(new THREE.BoxGeometry(0.8,0.3,2), new THREE.MeshStandardMaterial({color:0x5d4037})); wood.position.set(-25+Math.random()*50,0.15,-5+Math.random()*20); scene.add(wood); woods.push(wood);}
+ // Player - Drei / Rabbit
+ let pg=new THREE.Group(); let mat=new THREE.MeshStandardMaterial({color:0x8bc34a}); let b=new THREE.Mesh(new THREE.CapsuleGeometry(0.4,1.1,4,8), mat); b.position.y=0.9; pg.add(b);
+ let ears=null; if(P.isRabbit){let ear1=new THREE.Mesh(new THREE.ConeGeometry(0.15,0.8,6), new THREE.MeshStandardMaterial({color:0xffffff})); ear1.position.set(-0.2,1.8,0); pg.add(ear1); let ear2=ear1.clone(); ear2.position.set(0.2,1.8,0); pg.add(ear2);}
+ pg.position.set(0,0.9,20); scene.add(pg); player=pg;
+ // NPCs
+ spawnNPC(-10,0,12,"Mother Mudra - Strict Mother","Drei! I told you respect parent! Parent will respect you too! You run too much! Rest!","mother");
+ spawnNPC(10,0,12,"Luvid Kids","Drei, let's play in playground! But at night it's dangerous! Go sleep!","kids");
+ spawnNPC(0,0,6,"Hermit Racky - Discipline Hermit","I am hermit who disciplines children! You ran 1 month no rest! I will turn you into rabbit that never sleeps!","hermit");
+ spawnNPC(-14,0,2,"Town Elder","Respect elderly! Be discipline to care healthy self! Don't abuse running!","elder");
+ // ENEMIES & BOSSES - Tiredness, No Sleep, Disrespect
+ spawnEnemy(0,0,-16,"Tiredness Demon - No Rest Boss",true,140);
+ spawnEnemy(8,0,-12,"Night Danger - Kids left at night",false,60);
+ spawnEnemy(-8,0,-12,"Disrespect Shadow - Disrespect Mother",false,65);
+ spawnEnemy(0,0,-28,"Hermit Racky Boss - Turns you into rabbit",true,170);
+ spawnEnemy(14,0,0,"Fatigue Ghost - 1 Month No Sleep",false,70);
+ addEventListener('keydown',e=>{
+   keys[e.key.toLowerCase()]=true; let k=e.key.toLowerCase();
+   if(k=='f')first=!first;
+   if(k=='q'){let el=document.getElementById('hudInv'); el.style.display=el.style.display=='none'?'block':'none';}
+   if(k=='k'){let el=document.getElementById('skillMenu'); el.style.display=el.style.display=='none'?'block':'none';}
+   if(k=='e')talk();
+   if(k=='r')restSleep();
+   if(k==' ') {if(player.position.y<1.2) player.userData.vy=0.18;}
+ });
+ addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false); addEventListener('mousedown',()=>{if(running)runAttack();}); addEventListener('mousemove',e=>{if(running&&document.pointerLockElement)player.rotation.y-=e.movementX*0.0025;}); renderer.domElement.addEventListener('click',()=>renderer.domElement.requestPointerLock());
+ player.userData={vy:0}; animate(); questUpdate(); updateHUD();
+}
+function spawnNPC(x,y,z,name,diag,type){let g=new THREE.Group(); let c=type=='mother'?0xff8a65:type=='kids'?0x81d4fa:type=='hermit'?0x9575cd:0xaed581; let m=new THREE.Mesh(new THREE.CapsuleGeometry(0.36,0.95,4,8), new THREE.MeshStandardMaterial({color:c})); m.position.y=0.7; g.add(m); g.position.set(x,0,z); g.userData={name,diag,type}; scene.add(g); npcs.push(g);}
+function spawnEnemy(x,y,z,name,boss,hp){let g=new THREE.Group(); let c=boss?0xbf360c:0x6d4c41; let m=new THREE.Mesh(new THREE.BoxGeometry(0.9,boss?2:1.3,0.8), new THREE.MeshStandardMaterial({color:c})); m.position.y=boss?1:0.65; g.add(m); g.position.set(x,0,z); g.userData={hp,max:hp,boss,name}; scene.add(g); enemies.push(g);}
+function talk(){
+ npcs.forEach(n=>{
+   if(n.position.distanceTo(player.position)<3.2){
+     document.getElementById('mainDesc').innerText=n.userData.name+": "+n.userData.diag;
+     if(n.userData.type=='mother'){P.respect+=10; P.xp+=30; document.getElementById('mainQuest').innerText="QUEST: Respect Mother Mudra - Rest!"; questUpdate();}
+     if(n.userData.type=='kids'){P.playground+=10; P.xp+=20; document.getElementById('mainDesc').innerText+=" Kids say: At night it's dangerous to play! Sleep!"; questUpdate();}
+     if(n.userData.type=='hermit'){
+       if(P.sleep<20){P.isRabbit=true; player.children[0].material.color.set(0xffffff); document.getElementById('mainQuest').innerText="CURSED! You are now Legend Of The Rabbit!"; document.getElementById('mainDesc').innerText="Hermit Racky cast spell! You turned into rabbit that never sleeps! Always running!"; classChange();}
+       else {document.getElementById('mainDesc').innerText+=" Hermit: You still rest, so I won't curse you yet! Rest more!";}
+     }
+     if(n.userData.type=='elder'){P.respect+=15; P.xp+=35; questUpdate();}
+   }
+ });
+ // Collect wood
+ woods.forEach((w,i)=>{
+   if(w && w.position.distanceTo(player.position)<2){scene.remove(w); woods[i]=null; P.playground+=12; document.getElementById('invList').innerHTML+=`<br>+ Wood ${P.playground}%`; questUpdate();}
+ });
+}
+function runAttack(){
+ enemies.forEach(en=>{
+   if(en.position.distanceTo(player.position)<3){
+     let dmg=P.spd*1.2+P.sta; en.userData.hp-=dmg; en.children[0].material.color.set(0xffffff); setTimeout(()=>en.children[0].material.color.set(en.userData.boss?0xbf360c:0x6d4c41),120);
+     if(en.userData.hp<=0){scene.remove(en); enemies=enemies.filter(e=>e!=en); P.xp+=en.userData.boss?110:40; P.respect+=5; if(en.userData.name.includes('Racky')){document.getElementById('mainQuest').innerText="Racky defeated! But curse remains if you don't rest!";} if(enemies.length==0)win(); questUpdate();}
+   }
+ });
+}
+window.equipShoes=()=>{P.spd+=3; document.getElementById('invList').innerHTML+="<br>[EQUIPPED Running Shoes] Speed +3"; updateHUD();}
+window.buildPlay=()=>{
+ if(P.playground>=100){document.getElementById('invList').innerHTML+="<br>Playground BUILT! Kids can play!"; P.xp+=100; P.respect+=20; questUpdate();}
+ else alert(`Need 100% wood! Now ${P.playground}% - Collect brown woods on ground!`);
+}
+window.restSleep=()=>{
+ if(P.energy<20){alert("Too tired! Need to rest!"); return;}
+ P.sleep=Math.min(100,P.sleep+35); P.energy=Math.min(100,P.energy+40); P.hp=Math.min(P.max,P.hp+15);
+ document.getElementById('mainDesc').innerText="Resting... Sleeping... Energy restored... Clever to spend some sleep to make energy! Be discipline for healthy self!";
+ document.getElementById('invList').innerHTML+=`<br>[RESTED] Sleep ${P.sleep}% Energy ${P.energy}%`;
+ days+=0.1; questUpdate(); updateHUD();
+}
+window.learnSkill=(sk)=>{
+ if(P.sp<=0)return; P.sp--; document.getElementById('sp').innerText=P.sp; let log=document.getElementById('skillLog');
+ if(sk=='discipline'){P.respect+=20; P.def+=5; log.innerHTML+="DISCIPLINE learned Respect +20 DEF +5<br>";}
+ if(sk=='rest'){P.sta+=7; P.sleep=Math.min(100,P.sleep+20); log.innerHTML+="REST learned STA +7 Sleep +20%<br>";}
+ if(sk=='nimble'){P.spd+=6; log.innerHTML+="NIMBLE RUN Speed +6 - Runs so fast and nimble<br>";}
+ if(sk=='playground'){P.xp+=80; log.innerHTML+="PLAYGROUND BUILDER XP x2<br>";}
+ if(sk=='rabbit'){P.isRabbit=true; P.spd+=5; player.children[0].material.color.set(0xffffff); log.innerHTML+="RABBIT FORM - Legend Of The Rabbit - Super speed but cannot sleep!<br>";}
+ if(sk=='respect'){P.respect+=25; log.innerHTML+="RESPECT ELDERLY Respect +25<br>";}
+ updateHUD();
+}
+function questUpdate(){
+ let side=document.getElementById('sideQuest');
+ side.innerHTML=`- Enemies: Tiredness Demon, Night Danger, Hermit Racky Boss (${enemies.length} left)<br>- Playground: ${P.playground}% wood collected<br>- Days running without rest: ${days.toFixed(1)} / 30 days = Rabbit curse!<br>- Sleep Meter: ${P.sleep}% - If low, you become rabbit!<br>- Moral: Don't abuse running, spend sleep for energy, respect elderly`;
+ if(P.xp>=100){P.lv++;P.xp=0;P.sp++;P.max+=15;P.hp=P.max;document.getElementById('lvl').innerText=P.lv;document.getElementById('sp').innerText=P.sp; document.getElementById('skillLog').innerHTML+=`LEVEL UP Level ${P.lv}<br>`;}
+ updateHUD();
+}
+function updateHUD(){
+ document.getElementById('hp').style.width=P.hp/P.max*100+"%";
+ document.getElementById('energy').style.width=P.energy+"%";
+ document.getElementById('sleep').style.width=P.sleep+"%";
+ document.getElementById('xpBar').style.width=P.xp+"%";
+ document.getElementById('play').innerText=P.playground+"%"; document.getElementById('respect').innerText=P.respect;
+ document.getElementById('spd').innerText=P.spd;document.getElementById('def').innerText=P.def;document.getElementById('sta').innerText=P.sta;
+}
+function win(){
+ document.getElementById('mainQuest').innerText="LEGEND OF THE RABBIT - LESSON LEARNED!";
+ document.getElementById('mainDesc').innerHTML="Drei learned! He was turned into rabbit that always running and never sleeping! Kids play with rabbit Drei in playground! <br><b>Moral: Don't abuse too much running and playing. Be clever to spend some sleep to make energy. Have time to not be tired. Respect elderly. Be discipline to care healthy self.</b>";
+ setTimeout(()=>alert("YOU FINISHED!\n\nDrei became Legend Of The Rabbit!\nAlways running, never sleeping!\nKids play with rabbit!\n\nMoral: Rest, respect mother, be healthy!"),800);
+}
+function animate(){
+ if(!running)return; requestAnimationFrame(animate);
+ time+=0.02;
+ // Movement - RUN is main mechanic
+ let baseSpeed=0.11+P.spd*0.012; let sprint=false;
+ if(keys['shift']&&P.energy>0){baseSpeed*=1.9; P.energy-=0.7; P.sleep-=0.12; sprint=true;} else {if(P.energy<100)P.energy+=0.2;}
+ if(keys['w'])player.translateZ(-baseSpeed); if(keys['s'])player.translateZ(baseSpeed*0.6); if(keys['a'])player.translateX(-baseSpeed*0.7); if(keys['d'])player.translateX(baseSpeed*0.7);
+ // Jump physics
+ player.userData.vy-=0.01; player.position.y+=player.userData.vy; if(player.position.y<=0.9){player.position.y=0.9; player.userData.vy=0;}
+ // Energy and sleep drain when running
+ if(keys['w']||keys['a']||keys['s']||keys['d']){if(!sprint)P.energy-=0.08; P.sleep-=0.05; days+=0.002;}
+ // Auto rabbit curse if no sleep for long
+ if(P.sleep<=0&&!P.isRabbit){P.isRabbit=true; player.children[0].material.color.set(0xffffff); document.getElementById('mainQuest').innerText="CURSED INTO RABBIT!"; document.getElementById('mainDesc').innerText="You ran 1 month without rest! Hermit Racky turned you into Legend Of The Rabbit! Never sleep anymore!"; P.spd+=4;}
+ // Enemies chase
+ enemies.forEach(en=>{if(en.position.distanceTo(player.position)<14){en.lookAt(player.position); let d=new THREE.Vector3().subVectors(player.position,en.position).normalize().multiplyScalar(en.userData.boss?0.022:0.016); en.position.add(d); if(en.position.distanceTo(player.position)<1.5){P.hp-=0.22; P.energy-=0.2;}}});
+ if(first){camera.position.copy(player.position).add(new THREE.Vector3(0,1.2,0.3));} else{let off=new THREE.Vector3(0,4.5,9).applyQuaternion(player.quaternion); camera.position.copy(player.position).add(off); camera.lookAt(player.position.clone().add(new THREE.Vector3(0,0.9,0)));}
+ let ctx=document.getElementById('miniMap').getContext('2d'); ctx.clearRect(0,0,150,150); ctx.fillStyle="#12180e"; ctx.fillRect(0,0,150,150);
+ ctx.fillStyle="#8bc34a"; ctx.fillRect(75+player.position.x,75+player.position.z,6,6);
+ enemies.forEach(en=>{ctx.fillStyle=en.userData.boss?"#bf360c":"#6d4c41"; ctx.fillRect(75+en.position.x,75+en.position.z,4,4);});
+ npcs.forEach(np=>{ctx.fillStyle=np.userData.type=='mother'?"#ff8a65":"#81d4fa"; ctx.fillRect(75+np.position.x,75+np.position.z,3,3);});
+ woods.forEach(w=>{if(w){ctx.fillStyle="#5d4037"; ctx.fillRect(75+w.position.x,75+w.position.z,2,2);}});
+ if(P.hp<=0){alert("Drei too tired! Need rest and respect! Moral: Spend sleep for energy!"); location.reload();}
+ updateHUD(); renderer.render(scene,camera);
+}
+</script>
+</body>
+</html>
